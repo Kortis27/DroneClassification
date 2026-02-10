@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# PyCharm
+.idea/
+
+# YOLO / Ultralytics
+runs/
+*.pt
+*.onnx
+
+# Datasets (usually large)
+datasets/
+data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
