@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Drone Detector</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+        .upload-box { border: 2px dashed #ccc; padding: 40px; width: 300px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+    <h1>Upload an Image</h1>
+    <p>Submit an image to see if the model detects a drone.</p>
+
+    <div class="upload-box">
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <input type="file" name="image" accept="image/*" required>
+            <br><br>
+            <button type="submit">Run Detection</button>
+        </form>
+    </div>
+
+</body>
+</html>
