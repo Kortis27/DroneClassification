@@ -9,10 +9,7 @@ venv/
 # PyCharm
 .idea/
 
-# YOLO / Ultralytics
-runs/
-*.pt
-*.onnx
+
 
 # Datasets (usually large)
 datasets/
