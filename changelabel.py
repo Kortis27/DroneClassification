@@ -1,7 +1,7 @@
 import os
 
-LABELS_DIR = "Database1"
-IMAGES_DIR = "Database1"
+LABELS_DIR = "datasets/drone/test/labels"
+IMAGES_DIR = "datasets/drone/test/images"
 
 
 valid_label_basenames = set()
@@ -26,9 +26,13 @@ for filename in os.listdir(LABELS_DIR):
 
     # Force class ID = 2
     new_lines = []
+
     for line in lines:
         parts = line.split()
-        parts[0] = "2"
+        class_id = int(parts[0])
+        if parts[0] == "0":
+            print(label_path)
+
         new_lines.append(" ".join(parts))
 
     with open(label_path, "w") as f:
@@ -38,16 +42,6 @@ for filename in os.listdir(LABELS_DIR):
     base_name = os.path.splitext(filename)[0]
     valid_label_basenames.add(base_name)
 
-# --- STEP 2: Remove images without matching labels ---
-for filename in os.listdir(IMAGES_DIR):
-    if not filename.lower().endswith(".jpeg"):
-        continue
 
-    base_name = os.path.splitext(filename)[0]
-
-    if base_name not in valid_label_basenames:
-        image_path = os.path.join(IMAGES_DIR, filename)
-        os.remove(image_path)
-        print(f"Deleted image without label: {filename}")
 
 print("Cleanup complete.")
