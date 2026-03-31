@@ -3,7 +3,8 @@ from ultralytics import YOLO
 
 model = YOLO("runs/detect/train2/weights/best.pt")
 
-cap = cv2.VideoCapture(0)  # 0 = webcam
+cap = cv2.VideoCapture("0")  # 0 = webcam or replace with video file path
+cv2.namedWindow("Drone Detection", cv2.WINDOW_NORMAL)
 
 while cap.isOpened():
     ret, frame = cap.read()

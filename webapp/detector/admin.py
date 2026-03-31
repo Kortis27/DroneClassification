@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import DetectionHistory
 
-# Register your models here.
+# This makes your history visible in the Django admin panel
+admin.site.register(DetectionHistory)

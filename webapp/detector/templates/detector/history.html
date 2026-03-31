@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detection History</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+        table { margin: 0 auto; border-collapse: collapse; width: 80%; }
+        th, td { border: 1px solid #ccc; padding: 10px; }
+        th { background-color: #f4f4f4; }
+        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Detection History</h1>
+    
+    <table>
+        <tr>
+            <th>Date Processed</th>
+            <th>Type</th>
+            <th>Original File</th>
+            <th>Results</th> <th>View Result</th>
+        </tr>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.created_at|date:"M d, Y - h:i A" }}</td>
+            <td>{{ record.media_type|title }}</td>
+            <td>{{ record.original_filename }}</td>
+            <td><strong>{{ record.detection_summary|default:"N/A" }}</strong></td> <td><a href="{{ record.result_url }}" target="_blank">View File</a></td>
+        </tr>
+        
+        {% empty %}
+        <tr>
+            <td colspan="4">No files processed yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+        <div style="margin-top: 20px;">
+            <a href="/" class="btn">Back to Upload</a>
+            
+            <form action="{% url 'clear_history' %}" method="POST" style="display: inline-block; margin-left: 10px;" onsubmit="return confirm('Are you sure? This will delete all records and video files permanently.');">
+                {% csrf_token %}
+                <button type="submit" class="btn" style="background-color: #dc3545;">Clear History</button>
+            </form>
+        </div>
+</body>
+</html>

@@ -4,22 +4,30 @@
     <meta charset="UTF-8">
     <title>Detection Result</title>
     <style>
-        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-        img { max-width: 80%; height: auto; border: 2px solid #333; margin-top: 20px; }
-        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; }
+        body { font-family: system-ui, sans-serif; background: #f3f4f6; text-align: center; padding: 40px; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; max-width: 80%; }
+        img, video { max-width: 100%; border-radius: 8px; margin-top: 15px; border: 2px solid #e5e7eb; }
+        .summary-box { background: #eef2ff; color: #3730a3; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.2rem; margin-top: 10px; }
+        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; }
     </style>
 </head>
 <body>
-
-    <h1>Detection Complete</h1>
-    
-    {% if result_image %}
-        <img src="{{ result_image }}" alt="Processed Image with Bounding Boxes">
-    {% else %}
-        <p>Something went wrong. No image was returned.</p>
-    {% endif %}
-
-    <br>
-    <a href="/" class="btn">Upload Another Image</a>
-
+    <div class="card">
+        <h1 style="margin-top: 0;">Analysis Complete</h1>
+        
+        
+        {% if media_type == 'image' %}
+            <img src="{{ result_url }}" alt="Processed Image">
+        {% elif media_type == 'video' %}
+            <video controls autoplay muted>
+                <source src="{{ result_url }}" type="video/mp4">
+            </video>
+        {% endif %}
+        <div class="summary-box">
+        {{ summary }}
+        </div>
+        <br>
+        <a href="/" class="btn">Process Another File</a>
+    </div>
 </body>
+</html>

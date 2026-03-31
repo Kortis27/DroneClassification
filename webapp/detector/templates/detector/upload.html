@@ -2,25 +2,121 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Drone Detector</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Buddies - Drone Detection</title>
     <style>
-        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-        .upload-box { border: 2px dashed #ccc; padding: 40px; width: 300px; margin: 0 auto; }
+        /* Modern UI Color Palette */
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #dc2626;
+            --danger-bg: #fee2e2;
+            --danger-hover: #fecaca;
+            --secondary: #e5e7eb;
+            --secondary-hover: #d1d5db;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Centers the card vertically */
+            margin: 0;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        h1 { margin-top: 0; font-size: 1.8rem; color: #111827; margin-bottom: 0.5rem; }
+        p.subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 2rem 1rem;
+            margin-bottom: 1.5rem;
+            background-color: #f9fafb;
+            transition: border-color 0.2s ease;
+        }
+        .upload-area:hover { border-color: var(--primary); }
+        
+        input[type="file"] { width: 100%; cursor: pointer; }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .btn-primary { background-color: var(--primary); color: white; margin-bottom: 1.5rem; }
+        .btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+
+        /* Bottom Action Links Container */
+        .action-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1.5rem;
+        }
+
+        .link-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+            flex: 1; /* Makes both buttons equal width */
+        }
+        
+        .link-history { background-color: var(--secondary); color: var(--text-main); }
+        .link-history:hover { background-color: var(--secondary-hover); }
+        
+        .link-live { background-color: var(--danger-bg); color: var(--danger); }
+        .link-live:hover { background-color: var(--danger-hover); }
     </style>
 </head>
 <body>
 
-    <h1>Upload an Image</h1>
-    <p>Submit an image to see if the model detects a drone.</p>
-
-    <div class="upload-box">
+    <div class="card">
+        <h1>AI Drone Classifier</h1>
+        
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            
-            <input type="file" name="image" accept="image/*" required>
-            <br><br>
-            <button type="submit">Run Detection</button>
+            <div class="upload-area">
+                <input type="file" name="media_file" accept="image/*,video/*" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Run Detection</button>
         </form>
+
+        <div class="action-links">
+            <a href="{% url 'history' %}" class="link-btn link-history">View History</a>
+            <a href="{% url 'live_cam' %}" class="link-btn link-live">Live Camera</a>
+        </div>
     </div>
 
 </body>
