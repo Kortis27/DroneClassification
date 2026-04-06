@@ -14,13 +14,14 @@ def process_image(image_file_path):
     # 1. Run the AI prediction
     results = model(image_file_path, conf=0.2)
     
-    # 2. Extract Text Data for the database
+    # 2. Extract Text Data (WITH NULL CHECK to prevent crashes on empty images)
     detected_items = []
-    for box in results[0].boxes:
-        class_id = int(box.cls[0])
-        class_name = model.names[class_id]
-        confidence = float(box.conf[0])
-        detected_items.append(f"{class_name.capitalize()} ({confidence:.0%})")
+    if results[0].boxes is not None:
+        for box in results[0].boxes:
+            class_id = int(box.cls[0])
+            class_name = model.names[class_id]
+            confidence = float(box.conf[0])
+            detected_items.append(f"{class_name.capitalize()} ({confidence:.0%})")
     
     # Create the text summary
     if detected_items:
@@ -44,10 +45,6 @@ def process_image(image_file_path):
     return f"/media/results/{new_filename}", summary
 
 def process_video(video_file_path):
-    """
-    Takes an uploaded video, runs YOLO inference frame-by-frame,
-    and saves the output as a web-friendly .webm video.
-    """
     cap = cv2.VideoCapture(video_file_path)
     
     # Get original video properties
@@ -64,12 +61,13 @@ def process_video(video_file_path):
     os.makedirs(results_dir, exist_ok=True)
     save_path = os.path.join(results_dir, new_filename)
     
-    # Use mp4v codec for standard MP4 creation
+    # Use avc1 codec for web browser compatibility
     fourcc = cv2.VideoWriter_fourcc(*'avc1')
     out = cv2.VideoWriter(save_path, fourcc, fps, (width, height))
     
-    unique_detections = set() # Use a set to avoid thousands of duplicates
+    unique_detections = set()
     
+    # Process frame by frame
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
@@ -77,13 +75,14 @@ def process_video(video_file_path):
             
         results = model.predict(frame, conf=0.2, verbose=False)
         
-        # --- NEW: Extract Video Text Data ---
-        for box in results[0].boxes:
-            class_id = int(box.cls[0])
-            class_name = model.names[class_id]
-            unique_detections.add(class_name.capitalize())
-        # ------------------------------------
+        # Extract Text Data (WITH NULL CHECK for empty skies)
+        if results[0].boxes is not None:
+            for box in results[0].boxes:
+                class_id = int(box.cls[0])
+                class_name = model.names[class_id]
+                unique_detections.add(class_name.capitalize())
         
+        # Write the annotated frame to the new video file
         annotated = results[0].plot()
         out.write(annotated)
         
@@ -96,7 +95,6 @@ def process_video(video_file_path):
     else:
         summary = "No objects detected."
     
-    # Return BOTH the URL and the summary
     return f"/media/results/{new_filename}", summary
 
 def generate_frames():
