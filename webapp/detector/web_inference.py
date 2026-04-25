@@ -11,76 +11,70 @@ MODEL_PATH = os.path.join(PROJECT_ROOT, 'runs/detect/train2/weights/best.pt')
 model = YOLO(MODEL_PATH)
 
 def process_image(image_file_path):
-    # 1. Run the AI prediction
-    results = model(image_file_path, conf=0.2)
+    # 1. Run the AI Classification prediction
+    results = model(image_file_path)
     
-    # 2. Extract Text Data (WITH NULL CHECK to prevent crashes on empty images)
-    detected_items = []
-    if results[0].boxes is not None:
-        for box in results[0].boxes:
-            class_id = int(box.cls[0])
-            class_name = model.names[class_id]
-            confidence = float(box.conf[0])
-            detected_items.append(f"{class_name.capitalize()} ({confidence:.0%})")
-    
-    # Create the text summary
-    if detected_items:
-        summary = ", ".join(detected_items)
+    # 2. Extract Classification Data
+    if results[0].probs is not None:
+        # Get the ID of the highest probability class
+        top_class_id = results[0].probs.top1
+        # Match it to the class name (e.g., "burden" or "no_burden")
+        class_name = model.names[top_class_id]
+        # Get the confidence percentage
+        confidence = float(results[0].probs.top1conf)
+        
+        summary = f"{class_name.capitalize()} ({confidence:.0%})"
     else:
-        summary = "No objects detected."
+        summary = "Classification failed."
 
     # 3. Generate the new filename and paths
     original_filename = os.path.basename(image_file_path)
-    new_filename = f"detected_{original_filename}"
+    new_filename = f"classified_{original_filename}"
     
     results_dir = os.path.join(settings.MEDIA_ROOT, 'results')
     os.makedirs(results_dir, exist_ok=True)
     save_path = os.path.join(results_dir, new_filename)
     
-    # 4. Draw the boxes and save the new image
+    # 4. Draw the classification text and save the new image
     annotated_image = results[0].plot()
     cv2.imwrite(save_path, annotated_image)
     
     # 5. Return both the URL for the webpage and the text for the database
     return f"/media/results/{new_filename}", summary
 
+
 def process_video(video_file_path):
     cap = cv2.VideoCapture(video_file_path)
     
-    # Get original video properties
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     
-    # Force the output to be an .mp4 file
     original_filename = os.path.basename(video_file_path)
     base_name = os.path.splitext(original_filename)[0]
-    new_filename = f"detected_{base_name}.mp4"
+    new_filename = f"classified_{base_name}.mp4"
     
     results_dir = os.path.join(settings.MEDIA_ROOT, 'results')
     os.makedirs(results_dir, exist_ok=True)
     save_path = os.path.join(results_dir, new_filename)
     
-    # Use avc1 codec for web browser compatibility
     fourcc = cv2.VideoWriter_fourcc(*'avc1')
     out = cv2.VideoWriter(save_path, fourcc, fps, (width, height))
     
-    unique_detections = set()
+    unique_classifications = set()
     
-    # Process frame by frame
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
             
-        results = model.predict(frame, conf=0.2, verbose=False)
+        results = model.predict(frame, verbose=False)
         
-        # Extract Text Data (WITH NULL CHECK for empty skies)
-        if results[0].boxes is not None:
-            for box in results[0].boxes:
-                class_id = int(box.cls[0])
-                class_name = model.names[class_id]
-                unique_detections.add(class_name.capitalize())
+        # Extract Classification Data for this frame
+        if results[0].probs is not None:
+            top_class_id = results[0].probs.top1
+            class_name = model.names[top_class_id]
+            unique_classifications.add(class_name.capitalize())
         
         # Write the annotated frame to the new video file
         annotated = results[0].plot()
@@ -90,30 +84,33 @@ def process_video(video_file_path):
     out.release()
     
     # Create a summary of everything seen in the video
-    if unique_detections:
-        summary = "Detected in video: " + ", ".join(unique_detections)
+    if unique_classifications:
+        summary = "Classified as: " + ", ".join(unique_classifications)
     else:
-        summary = "No objects detected."
+        summary = "No objects classified."
     
     return f"/media/results/{new_filename}", summary
-
 def generate_frames():
     """
-    Captures live video, runs YOLO, and yields JPEG frames for web streaming.
+    Captures live video, runs YOLO Classification, and yields JPEG frames.
     """
-    # Change '0' to your phone's IP camera URL if you went that route!
-    camera = cv2.VideoCapture(0)
+
+    camera = cv2.VideoCapture(0) 
     
     while True:
         success, frame = camera.read()
         if not success:
             break
             
-        # Run YOLO inference (using 0.2 confidence to match your video script)
-        results = model.predict(frame, conf=0.2, verbose=False)
+        # Run YOLO classification prediction
+        # No conf=0.2 needed for classification
+        results = model.predict(frame, verbose=False)
+        
+        # YOLO's plot() will automatically write the top classification 
+        # (burden or no_burden) in the top corner of the video frame
         annotated_frame = results[0].plot()
         
-        # Compress the image to JPEG
+        # Compress the image to JPEG for the web stream
         ret, buffer = cv2.imencode('.jpg', annotated_frame)
         frame_bytes = buffer.tobytes()
         
