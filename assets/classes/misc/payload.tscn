@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://day1s102lsbt"]
+
+[ext_resource type="PackedScene" uid="uid://db40o5hejpyoe" path="res://assets/source/DJI-Mavic_3.glb" id="1_0ufw5"]
+[ext_resource type="PackedScene" uid="uid://dkc52e65ujvoy" path="res://assets/c4_explosive.glb" id="2_c7ahw"]
+
+[node name="Node3D" type="Node3D" unique_id=668912171]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+
+[node name="DJI-Mavic_3" parent="." unique_id=1197199536 instance=ExtResource("1_0ufw5")]
+
+[node name="Sketchfab_Scene" parent="." unique_id=957428965 instance=ExtResource("2_c7ahw")]
+transform = Transform3D(2.0388768, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, -6.571105, -0.5545528)

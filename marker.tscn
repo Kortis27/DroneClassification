@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://bewrcam4vt6id"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovyla"]
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_f37rb"]
+material = SubResource("StandardMaterial3D_ovyla")
+radius = 0.25
+height = 0.5
+
+[node name="Marker" type="MeshInstance3D" unique_id=171162720]
+mesh = SubResource("SphereMesh_f37rb")

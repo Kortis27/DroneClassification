@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://634sivr1xblt"]
+
+[ext_resource type="PackedScene" uid="uid://cwx74oisy3nvw" path="res://assets/fpv_drone.glb" id="1_f8nb2"]
+
+[node name="Node3D" type="Node3D" unique_id=632166659]
+
+[node name="Sketchfab_Scene" parent="." unique_id=154383885 instance=ExtResource("1_f8nb2")]

@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://bo25bd47rs857"]
+
+[ext_resource type="Script" uid="uid://brfvw0qmdk018" path="res://main_Main.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://chhbiyqknrosw" path="res://assets/classes/no_burden/no_payload.tscn" id="2_lquwl"]
+[ext_resource type="Texture2D" uid="uid://cq3t4orrbcubq" path="res://assets/backgrounds/grasslands_sunset_4k.exr" id="3_1bvp3"]
+[ext_resource type="Script" uid="uid://csooj8bh7me3t" path="res://main_camera_3d.gd" id="4_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://vh0t65t7fuuf" path="res://assets/backgrounds/minedump_flats_4k.exr" id="4_lquwl"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_h2yge"]
+panorama = ExtResource("4_lquwl")
+
+[sub_resource type="Sky" id="Sky_1bvp3"]
+sky_material = SubResource("PanoramaSkyMaterial_h2yge")
+
+[sub_resource type="Environment" id="Environment_lquwl"]
+background_mode = 2
+sky = SubResource("Sky_1bvp3")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_1bvp3"]
+material = SubResource("StandardMaterial3D_h2yge")
+inner_radius = 18.265
+outer_radius = 50.0
+
+[node name="Main" type="Node3D" unique_id=702721756]
+script = ExtResource("1_h2yge")
+object = ExtResource("2_lquwl")
+background = ExtResource("3_1bvp3")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1434552282]
+environment = SubResource("Environment_lquwl")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=277794143]
+transform = Transform3D(-1, 0, -5.2364663e-05, 0, 1, 0, 5.2364663e-05, 0, -1, 0, 0, -42.864567)
+current = true
+script = ExtResource("4_1bvp3")
+
+[node name="HorizanltePlane" type="MeshInstance3D" parent="." unique_id=172452668]
+visible = false
+mesh = SubResource("TorusMesh_1bvp3")
+
+[node name="VerticalPlane" type="MeshInstance3D" parent="." unique_id=1164653295]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+visible = false
+mesh = SubResource("TorusMesh_1bvp3")

@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://chhbiyqknrosw"]
+
+[ext_resource type="PackedScene" uid="uid://db40o5hejpyoe" path="res://assets/source/DJI-Mavic_3.glb" id="1_0ufw5"]
+
+[node name="Node3D" type="Node3D" unique_id=1950935632]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+
+[node name="DJI-Mavic_3" parent="." unique_id=1197199536 instance=ExtResource("1_0ufw5")]

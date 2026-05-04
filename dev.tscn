@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://bnpwx0hoxaekt"]
+
+[ext_resource type="Script" uid="uid://diyxx7wsu6ts2" path="res://dev_main.gd" id="1_coge5"]
+[ext_resource type="Script" uid="uid://dcu8a8rrxkcjb" path="res://dev_globe.gd" id="2_fkxo1"]
+[ext_resource type="PackedScene" uid="uid://bewrcam4vt6id" path="res://marker.tscn" id="3_daqws"]
+[ext_resource type="Script" uid="uid://b6rwp0uvuogfd" path="res://dev_world_environment.gd" id="4_0g12c"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6g1w5"]
+top_radius = 0.0
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_daqws"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.53333336, 1, 1, 0.08235294)
+
+[sub_resource type="SphereMesh" id="SphereMesh_0g12c"]
+material = SubResource("StandardMaterial3D_daqws")
+radius = 5.0
+height = 10.0
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_0g12c"]
+
+[sub_resource type="Sky" id="Sky_gamoy"]
+sky_material = SubResource("PanoramaSkyMaterial_0g12c")
+
+[sub_resource type="Environment" id="Environment_gamoy"]
+background_mode = 2
+background_color = Color(0, 0, 0.6039216, 1)
+sky = SubResource("Sky_gamoy")
+
+[node name="main" type="Node3D" unique_id=1797196242]
+script = ExtResource("1_coge5")
+
+[node name="drone" type="Node3D" parent="." unique_id=705809279]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="drone" unique_id=1996234867]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_6g1w5")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=962507708]
+transform = Transform3D(0.017662365, 0.99980927, 0.008338818, 0.02244918, -0.008734569, 0.99970967, 0.9995918, -0.01747004, -0.022599205, -0.0030308962, 9.357249, -0.0144530535)
+fov = 68.57306
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1269826139]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.25881904, 0, -0.25881904, 0.9659258, 0, 1, 3)
+
+[node name="globe" type="MeshInstance3D" parent="." unique_id=645744028]
+mesh = SubResource("SphereMesh_0g12c")
+script = ExtResource("2_fkxo1")
+marker = ExtResource("3_daqws")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=489677910]
+environment = SubResource("Environment_gamoy")
+script = ExtResource("4_0g12c")

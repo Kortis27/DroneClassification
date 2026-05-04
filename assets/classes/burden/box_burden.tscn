@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://b7vxc0vdf8alr"]
+
+[ext_resource type="PackedScene" uid="uid://cwx74oisy3nvw" path="res://assets/fpv_drone.glb" id="1_8a0rr"]
+[ext_resource type="PackedScene" uid="uid://cg8swfwi3twom" path="res://assets/box_package.glb" id="2_kogo7"]
+
+[node name="Node3D" type="Node3D" unique_id=632166659]
+
+[node name="Sketchfab_Scene" parent="." unique_id=154383885 instance=ExtResource("1_8a0rr")]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+metadata/_edit_group_ = true
+
+[node name="Sketchfab_Scene2" parent="." unique_id=800130552 instance=ExtResource("2_kogo7")]
+transform = Transform3D(-0.06743654, 0, -3.9994316, 0, 4, 0, 3.9994316, 0, -0.06743654, -0.096852124, -0.7734492, 0)

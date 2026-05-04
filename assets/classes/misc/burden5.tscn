@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://chy1a2q1cy2qs"]
+
+[ext_resource type="PackedScene" uid="uid://dych5ubeex6dn" path="res://assets/combat_fpv_drone_kamikaze.glb" id="1_aq11i"]
+
+[node name="Node3D" type="Node3D" unique_id=922094519]
+
+[node name="Sketchfab_Scene" parent="." unique_id=253702846 instance=ExtResource("1_aq11i")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
