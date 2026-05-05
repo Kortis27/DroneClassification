@@ -5,7 +5,7 @@ from django.conf import settings
 
 # 1. Point to the shared model in the root directory
 PROJECT_ROOT = os.path.dirname(settings.BASE_DIR) 
-MODEL_PATH = os.path.join(PROJECT_ROOT, 'runs/detect/train2/weights/best.pt')
+MODEL_PATH = os.path.join(PROJECT_ROOT, 'runs/detect/train2/weights/16_elm_84_rendered.pt')
 
 # 2. Load the model globally so it doesn't have to be reloaded on every request
 model = YOLO(MODEL_PATH)
@@ -61,7 +61,9 @@ def process_video(video_file_path):
     fourcc = cv2.VideoWriter_fourcc(*'avc1')
     out = cv2.VideoWriter(save_path, fourcc, fps, (width, height))
     
-    unique_classifications = set()
+    # --- NEW: Track the absolute highest confidence seen in the video ---
+    highest_confidence = 0.0
+    best_class_name = None
     
     while cap.isOpened():
         ret, frame = cap.read()
@@ -72,9 +74,14 @@ def process_video(video_file_path):
         
         # Extract Classification Data for this frame
         if results[0].probs is not None:
-            top_class_id = results[0].probs.top1
-            class_name = model.names[top_class_id]
-            unique_classifications.add(class_name.capitalize())
+            # Get the confidence of the top prediction for this frame
+            current_confidence = float(results[0].probs.top1conf)
+            
+            # If this is the highest confidence we've seen so far, save it
+            if current_confidence > highest_confidence:
+                highest_confidence = current_confidence
+                top_class_id = results[0].probs.top1
+                best_class_name = model.names[top_class_id]
         
         # Write the annotated frame to the new video file
         annotated = results[0].plot()
@@ -83,9 +90,8 @@ def process_video(video_file_path):
     cap.release()
     out.release()
     
-    # Create a summary of everything seen in the video
-    if unique_classifications:
-        summary = "Classified as: " + ", ".join(unique_classifications)
+    if best_class_name:
+        summary = f"{best_class_name.capitalize()} ({highest_confidence:.0%})"
     else:
         summary = "No objects classified."
     
@@ -95,7 +101,7 @@ def generate_frames():
     Captures live video, runs YOLO Classification, and yields JPEG frames.
     """
 
-    camera = cv2.VideoCapture(0) 
+    camera = cv2.VideoCapture("http://192.168.4.72:4747/video") 
     
     while True:
         success, frame = camera.read()
